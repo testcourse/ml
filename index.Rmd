@@ -1,0 +1,55 @@
+---
+title: "ml"
+author: "testcourse"
+date: "Sunday, September 21, 2014"
+output: html_document
+---
+
+# Agenda  
+ 1.Analyze the data and extract the feature  
+ 2.Predict the result of the test
+
+
+
+## Analyze the data and extract the feature  
+```{r echo=FALSE, cache=TRUE}
+train <- read.csv("pml-training.csv")
+test <- read.csv("pml-testing.csv")
+```
+
+1. We can easily discard some attributes because they have little valid values, such as kurtosis_roll_belt,kurtosis_picth_belt,kurtosis_yaw_belt, and so on
+2. We can also discard some attributes because they make no or little differences, such as
+```{r echo=FALSE}
+table(train$user_name, train$classe)
+```  
+3. We need to find all the features that make a lot difference, such as raw_timestamp_part_1 and raw_timestamp_part_1  
+Take raw_timestamp_part_1 as an example, for a particular raw_timestamp_part_1
+```{r echo=FALSE}
+table(train$raw_timestamp_part_1, train$classe)
+```  
+Finally, I decide to use these attributes as features:  
+  aw_timestamp_part_1  
+  raw_timestamp_part_2  
+  num_window  
+  total_accel_belt  
+  total_accel_forearm  
+  
+  
+Beault the model  
+```{r cache=TRUE, results='hide'}
+require(e1071)
+model <- svm(classe ~ raw_timestamp_part_1 + raw_timestamp_part_2 + num_window + total_accel_belt + total_accel_forearm, data = train)
+```
+
+## Predict the result  
+```{r}
+require(e1071)
+result <- predict(model, newdata=test[,c("raw_timestamp_part_1","raw_timestamp_part_2","num_window","total_accel_belt","total_accel_forearm")])
+result
+```  
+
+
+
+
+
+
